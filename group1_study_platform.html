@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Group I Study Platform — Sathish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f7f3eb;
+  --paper-2: #efe8d8;
+  --ink: #1a1612;
+  --ink-soft: #4a4137;
+  --ink-muted: #7a6f5f;
+  --accent: #8b3a1f;
+  --accent-2: #c47a3d;
+  --line: #d9cfb8;
+  --green: #4a6741;
+  --shadow: 0 1px 3px rgba(26, 22, 18, 0.08), 0 4px 12px rgba(26, 22, 18, 0.04);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; min-height: 100vh; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea, select { font-family: inherit; font-size: inherit; color: var(--ink); }
+
+/* ── Layout ── */
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 320px; background: var(--paper-2); border-right: 1px solid var(--line); padding: 24px 20px; overflow-y: auto; max-height: 100vh; position: sticky; top: 0; }
+.main { flex: 1; padding: 32px 48px; max-width: 1100px; overflow-y: auto; max-height: 100vh; }
+
+.brand { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px; color: var(--accent); }
+.brand-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-muted); margin-bottom: 24px; }
+
+/* ── Auth bar ── */
+.auth-bar { padding: 10px 14px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; margin-bottom: 20px; font-size: 12px; display: flex; align-items: center; justify-content: space-between; }
+.auth-bar .user { color: var(--ink-soft); font-weight: 500; }
+.auth-bar button { font-size: 11px; color: var(--accent); font-weight: 500; }
+.auth-bar.signed-out { background: #fff8e7; border-color: var(--accent-2); }
+
+/* ── Nav tabs ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
+.tab-btn { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--ink-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── Sidebar syllabus tree ── */
+.paper-group { margin-bottom: 18px; }
+.paper-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px dashed var(--line); }
+.unit-list { list-style: none; }
+.unit-item { padding: 6px 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; font-size: 13px; color: var(--ink-soft); transition: all 0.15s; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.unit-item:hover { background: var(--paper); color: var(--ink); }
+.unit-item.active { background: var(--accent); color: var(--paper); font-weight: 500; }
+.unit-item .unit-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.7; flex-shrink: 0; }
+.unit-item .unit-name { flex: 1; line-height: 1.35; }
+
+/* ── Main content ── */
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; line-height: 1.15; margin-bottom: 8px; color: var(--ink); }
+.section-sub { color: var(--ink-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px; }
+
+.card { background: #fdfbf6; border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.card h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.card h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); margin-bottom: 10px; font-weight: 600; }
+
+.syllabus-text { font-size: 14px; line-height: 1.7; color: var(--ink-soft); white-space: pre-wrap; }
+
+/* ── Buttons ── */
+.btn { padding: 9px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: all 0.15s; border: 1px solid transparent; }
+.btn-primary { background: var(--accent); color: var(--paper); }
+.btn-primary:hover { background: #6f2e18; }
+.btn-secondary { background: var(--paper); color: var(--ink); border-color: var(--line); }
+.btn-secondary:hover { background: var(--paper-2); }
+.btn-small { padding: 5px 10px; font-size: 11px; }
+.btn-danger { color: #b54a30; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ── Forms ── */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); margin-bottom: 6px; font-weight: 500; }
+.field input, .field textarea, .field select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: #fdfbf6; transition: border 0.15s;
+}
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+.field textarea { resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif; }
+
+/* ── AI section ── */
+.ai-controls { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+.ai-select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fdfbf6; font-size: 13px; }
+.ai-output { background: #fffef9; border-left: 3px solid var(--accent-2); padding: 16px 20px; border-radius: 0 6px 6px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.7; max-height: 500px; overflow-y: auto; }
+.ai-output:empty { display: none; }
+.ai-loading { color: var(--ink-muted); font-style: italic; padding: 12px 0; }
+
+/* ── Saved content cards ── */
+.note-card { background: #fffef9; border: 1px solid var(--line); border-left: 3px solid var(--green); padding: 14px 16px; border-radius: 0 6px 6px 0; margin-bottom: 10px; }
+.note-meta { font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+.note-title { font-weight: 600; font-size: 15px; margin-bottom: 6px; color: var(--ink); }
+.note-body { font-size: 13px; line-height: 1.6; color: var(--ink-soft); white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+.note-actions { margin-top: 10px; display: flex; gap: 6px; }
+
+/* ── File upload ── */
+.upload-zone { border: 2px dashed var(--line); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fdfbf6; }
+.upload-zone:hover { border-color: var(--accent-2); background: #fffef0; }
+.upload-zone.has-file { border-color: var(--green); background: #f4f7ed; }
+.upload-zone .upload-icon { font-size: 24px; margin-bottom: 6px; }
+.upload-zone .upload-text { font-size: 13px; color: var(--ink-muted); }
+.upload-zone .file-name { color: var(--ink); font-weight: 500; }
+
+/* ── Empty/info states ── */
+.empty { color: var(--ink-muted); font-style: italic; padding: 20px; text-align: center; font-size: 13px; }
+.warning { background: #fff4e0; border: 1px solid #e0b878; border-radius: 6px; padding: 12px 16px; font-size: 13px; color: #6a4a1c; margin-bottom: 16px; }
+.info { background: #eef4ed; border: 1px solid #b8cdb0; border-radius: 6px; padding: 12px 16px; font-size: 13px; color: #3a4f33; margin-bottom: 16px; }
+
+/* ── Settings/keys ── */
+.key-row { display: grid; grid-template-columns: 100px 1fr auto; gap: 10px; align-items: center; margin-bottom: 10px; }
+.key-row label { font-size: 12px; color: var(--ink-soft); font-weight: 500; }
+.key-row input { padding: 7px 10px; border: 1px solid var(--line); border-radius: 5px; background: #fdfbf6; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+/* ── Modal ── */
+.modal-bg { position: fixed; inset: 0; background: rgba(26, 22, 18, 0.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+.modal { background: var(--paper); border-radius: 10px; max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+.modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 8px; }
+.modal p { color: var(--ink-soft); margin-bottom: 16px; font-size: 14px; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; position: relative; max-height: none; border-right: none; border-bottom: 1px solid var(--line); }
+  .main { padding: 20px; max-height: none; }
+  .section-title { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app-root"></div>
+
+<!-- Firebase v10 modular SDK via CDN -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, query, where, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ──────────────────────────────────────────────────────────────
+// CONFIG — Sathish will paste his Firebase config here
+// ──────────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+
+let app, auth, db, currentUser = null;
+let firebaseReady = false;
+
+function initFirebase() {
+  if (!FIREBASE_CONFIG.apiKey) return false;
+  try {
+    app = initializeApp(FIREBASE_CONFIG);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    onAuthStateChanged(auth, user => {
+      currentUser = user;
+      window.dispatchEvent(new Event('auth-change'));
+    });
+    firebaseReady = true;
+    return true;
+  } catch (e) { console.error('Firebase init failed', e); return false; }
+}
+initFirebase();
+
+// ──────────────────────────────────────────────────────────────
+// SYLLABUS DATA — TNPSC Group I Mains
+// ──────────────────────────────────────────────────────────────
+const SYLLABUS = {
+  papers: [
+    {
+      id: 'p2', title: 'Paper II — General Studies',
+      units: [
+        {
+          id: 'p2u1', code: 'P2-I',
+          title: 'Modern History of India and Indian Culture',
+          content: `Advent of European invasion — Expansion and consolidation of British rule — Early uprising against British rule — 1857 Revolt — Indian National Congress — Growth of militant movements — Different modes of agitations — Emergence of national leaders — Gandhi, Nehru, Tagore, Netaji, Moulana Abulkalam Azad, Ambedkar and Patel — Era of different Acts & Pacts — Second World War & final phase struggle — Communalism led to partition.
+
+Effect of British rule on socio-economic factors — National renaissance — Socio-religious reform movements.
+
+India since independence — Characteristics of Indian culture — Unity in diversity — Race, Language, Religion, Custom — India: a secular state — Organizations for fine arts, dance, drama and music.
+
+Role of Tamil Nadu in freedom struggle — Bharathiar, VOC, Subramania Siva, Rajaji, Periyar and others — Political parties and Welfare schemes.
+
+Latest diary of events: National and International — National symbols — Eminent personalities & places in news — Sports & Games — Books & Authors — Awards & Honours — Cultural panorama — Latest historical events — Latest terminology — Appointments — Who is who?`
+        },
+        {
+          id: 'p2u2', code: 'P2-II',
+          title: 'Social Issues in India and Tamil Nadu',
+          content: `Population Explosion — Unemployment issues in India & Tamil Nadu — Child Abuse & Child Labour — Poverty — Rural and Urban Sanitation — Illiteracy.
+
+Women Empowerment — Role of the Government in Women Empowerment — Social injustice to Women — Domestic violence, Dowry menace, Sexual assault — Role of women and women's organisations.
+
+Social changes in India — Urbanization and its impact on the society — Problems and remedies — Impact of violence on Society — Religious violence, Terrorism and Communal violence — Regional Disparities — Problems of Minorities — Human Rights issues.
+
+Education — Linkage between Education and Social Development — Community Development Programmes — Employment Guarantee Schemes — Self Employment and Entrepreneurship Development — Role of N.G.Os in Social Welfare — Government Policy on Health.
+
+Welfare Schemes for vulnerable sections of the population by the Central and State governments and their performance.
+
+Current Affairs.`
+        },
+        {
+          id: 'p2u3', code: 'P2-III',
+          title: 'General Aptitude & Mental Ability (SSLC Standard)',
+          content: `Conversion of information to data — Collection, compilation and presentation of data — Tables, Graphs, Diagrams — Parametric representation of data — Analytical interpretation of data — Percentage — Highest Common Factor (HCF) — Lowest Common Multiple (LCM) — Ratio and Proportion — Simple interest — Compound interest — Area — Volume — Time and Work — Probability.
+
+Information technology — Basic terms, Communications — Application of Information and Communication Technology (ICT) — Decision making and problem solving — Basics in Computers / Computer terminology.`
+        }
+      ]
+    },
+    {
+      id: 'p3', title: 'Paper III — General Studies',
+      units: [
+        {
+          id: 'p3u1', code: 'P3-I',
+          title: 'Indian Polity & Emerging Political Trends Affecting India',
+          content: `Constitution of India: Historical background — Making of the Indian Constitution — Preamble — Salient features of the Indian Constitution — Fundamental Rights and Fundamental Duties — Directive Principles of State Policy — Schedules to the Indian Constitution.
+
+Union Executive: President, Vice-President, Prime Minister and Council of Ministers, Attorney General of India.
+Union Legislature: Parliament: Lok Sabha and Rajya Sabha — Composition, Powers, Functions and Legislative procedures.
+Union Judiciary: Structure, Powers and Functions of the Supreme Court — Judicial Review — Latest Verdicts.
+
+State Executive: Governor, Chief Minister — Speaker and Council of Ministers, Advocate General of the State.
+State Legislature: State Legislative Assembly — Organization, Powers and Functions.
+State Judiciary: Organisation, Powers and Functions of High Courts, District Courts and Subordinate Courts.
+
+Local Government: Historical Development — Features and working of 73rd and 74th Constitutional Amendment Act, 1992.
+Union Territories: Evolution of States and Union Territories — Administration of Union Territories.
+Federalism in India: Centre-State Relations — Administrative, Legislative and Financial Relations.
+
+Civil Services in India: Historical background — Classification of Civil Services — Recruitment & Training.
+State Services: Classification of State Services and Recruitment.
+Official Language: Constitutional provision — Official Language Act, VIII Schedule.
+Amendments: Major Amendments to the Indian Constitution.
+Special Status to Jammu & Kashmir: Art 370.
+
+Political Parties: National & Regional parties, Pressure Groups, Interest Groups, Public Opinion, Mass Media, NGOs and their role.
+
+Issue Areas in Indian Administration: Corruption — Anti-Corruption Measures — CVC — Lok Adalats — Ombudsman — RTI Act — Minister-Secretary Relationship — Generalist vs. Specialist controversy.
+
+Constitutional and Non-Constitutional Bodies — Composition, Powers and Functions.
+Profile of States — Defence, National Security and Terrorism — World Organisations — Pacts and Summits.
+
+India's Foreign Policy: Foreign Affairs with Special emphasis on India's relations with neighbouring countries — Security and defence related issues — Nuclear Policy — Issues and conflicts. The Indian Diaspora and its contribution.
+
+Current Affairs.`
+        },
+        {
+          id: 'p3u2', code: 'P3-II',
+          title: 'Role and Impact of Science and Technology in the Development of India',
+          content: `Science and Technology — Role, Achievements and Developments — Their applications and effects in everyday life — Energy — Conventional and Non-conventional — Self sufficiency — Oil exploration — Defence Research Organizations and other science and technology institutions — Ocean Research and Development — Role and Functions.
+
+Advancements in the fields of I.T., Space, Computers, Robotics, Nano-Technology — Mobile Communication — Remote sensing and its benefits.
+
+Health and hygiene — Human diseases — Prevention and remedies — Communicable diseases and non-communicable diseases — Genetic Engineering — Organ transplantation — Stem cell Technology — Medical Tourism — Advancements in Horticulture & Agriculture.
+
+Achievements of Indians in the fields of Science and Technology.
+Latest inventions in science & technology.`
+        },
+        {
+          id: 'p3u3', code: 'P3-III',
+          title: 'Tamil Society — Its Culture and Heritage',
+          content: `Candidates may answer the questions in this unit EITHER in Tamil OR in English.
+
+1) Tamil Society: Origin and expansion.
+2) Art and Culture: Literature, Music, Film, Drama, Architecture, Sculpture, Paintings and Folk Arts.
+3) Socio-economic history of Tamil Nadu from Sangam age to till date.
+4) Growth of Rationalist, Dravidian movements in Tamil Nadu — Their role in the socio-economic development of Tamil Nadu.
+5) Social and cultural life of contemporary Tamils: Caste, Religion, Women, Politics, Education, Economy, Trade and relationship with other countries.
+6) Tamil and other Disciplines: Mass Media, Computer etc.`
+        }
+      ]
+    },
+    {
+      id: 'p4', title: 'Paper IV — General Studies',
+      units: [
+        {
+          id: 'p4u1', code: 'P4-I',
+          title: 'Geography of India with Special Reference to Tamil Nadu',
+          content: `Location — Physical features — Major Rivers — Weather & Climate — Monsoon, Rainfall — Natural resources: Soil, Water, Forest, Minerals and Wildlife — Agricultural pattern — Livestock — Fisheries — Industries: Major industries — Growth and Development — Social-Cultural geography — Population: Growth, Density and Distribution — Racial, linguistic and major tribes.
+
+Oceanography — Bottom relief features of Indian Ocean, Arabian Sea and Bay of Bengal.
+
+Basics of Geospatial Technology: Geographical Information System (GIS) and Global Navigation Satellite System (GNSS).
+
+Map: Geographical landmarks — India and its neighbours.
+
+Current Affairs.`
+        },
+        {
+          id: 'p4u2', code: 'P4-II',
+          title: 'Environment, Biodiversity and Disaster Management',
+          content: `Ecology: Structure and function of Ecosystem — Ecological succession — Biodiversity conservation: Types — Biodiversity Hot Spots in India — Biodiversity: Significance and Threats — In-situ and Ex-situ conservation measures — Roles of CITES, IUCN & CBD.
+
+Environmental Pollution and Management: Air, Water, Soil, Thermal and Noise pollution and control strategies — Solid and Hazardous waste management — Environmental Impact Assessment (EIA): Steps in EIA process — Environmental Clearance — Environmental Auditing.
+
+Climate Change: Global Environmental Issues and Management — Changes in monsoon pattern in Tamil Nadu and India — Environmental consequences of climate change and mitigation measures — Clean and Green Energy — Environmental Sustainability.
+
+Environmental Laws, Policies & Treaties in India and Global scenario — Natural calamities and Disaster Management — Environmental Health and Sanitation.
+
+Current Affairs.`
+        },
+        {
+          id: 'p4u3', code: 'P4-III',
+          title: 'Indian Economy — Current Trends & Impact of Global Economy',
+          content: `Features of Indian Economy — Demographical profile of India — National Income — Capital formation — NEP (New Economic Policy) — NITI AYOG — National Development Council.
+
+Agriculture — Role of Agriculture — Land reforms — New Agricultural Strategy — Green Revolution — Price Policy, PDS, Subsidy, Food Security — Agricultural Marketing, Crop Insurance, Labour — Rural credit & indebtedness — WTO & Agriculture.
+
+Industry — Growth — Policy — Role of public sector and disinvestment — Privatisation and Liberalization — PPP — SEZs — MSMEs — Make in India.
+
+Infrastructure in India — Transport System — Energy — Power — Communication — Social Infrastructure — Science & Technology — R&D.
+
+Banking & Finance — Banking, Money & Finance — Central Bank — Commercial Bank — NBFIs — Stock Market — Financial Reforms — Financial Stability — Monetary Policy — RBI & Autonomy.
+
+Public Finance — Sources of Revenue — Tax & Non-Tax Revenue — Canons of taxation — GST — Public expenditure — Public debt — Finance Commission — Fiscal Policy.
+
+Issues in Indian Economy — Poverty & inequality — Poverty alleviation programmes — MGNREGA — New Welfare programmes for rural poverty — Unemployment — Inflation — Inflation targeting — Sustainable economic growth — Gender issues.
+
+India's Foreign Trade — BOP, EX-IM Policy, FOREX Market, FDI — Globalization & its impact — Global economic crisis & impact on Indian economy.
+
+International Agencies — IMF, World Bank, BRICS, SAARC, ASEAN.
+
+Tamil Nadu Economy & Issues — Gross State Domestic Product — Trends in State's economic growth — Demographic profile of Tamil Nadu — Agriculture — Industry & entrepreneurship development — Infrastructure: Power, Transportation — Social Infrastructure — SHGs & Rural Women empowerment — Rural poverty & unemployment — Environmental issues — Regional economic disparities — Local Government — Recent government welfare programmes.
+
+Current Affairs.`
+        }
+      ]
+    }
+  ]
+};
+
+// Flatten units for easy lookup
+const ALL_UNITS = [];
+SYLLABUS.papers.forEach(p => p.units.forEach(u => ALL_UNITS.push({ ...u, paperTitle: p.title })));
+
+// ──────────────────────────────────────────────────────────────
+// APP STATE
+// ──────────────────────────────────────────────────────────────
+const state = {
+  view: 'syllabus',      // 'syllabus' | 'assistant' | 'answers' | 'settings'
+  activeUnitId: 'p2u1',
+  notes: [],             // for active unit
+  answers: [],           // saved answer structures
+  aiKeys: JSON.parse(localStorage.getItem('aiKeys') || '{}'),
+  selectedAi: localStorage.getItem('selectedAi') || 'gemini',
+  aiOutput: '',
+  aiLoading: false,
+  uploadedFile: null,
+  uploadedText: '',
+};
+
+// ──────────────────────────────────────────────────────────────
+// FIREBASE HELPERS
+// ──────────────────────────────────────────────────────────────
+async function fbLoadNotes(unitId) {
+  if (!currentUser || !db) return [];
+  const q = query(collection(db, 'users', currentUser.uid, 'notes'), where('unitId', '==', unitId));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+}
+async function fbSaveNote(note) {
+  if (!currentUser || !db) throw new Error('Not signed in');
+  return await addDoc(collection(db, 'users', currentUser.uid, 'notes'), { ...note, createdAt: serverTimestamp() });
+}
+async function fbDeleteNote(id) {
+  if (!currentUser || !db) return;
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'notes', id));
+}
+async function fbUpdateNote(id, updates) {
+  if (!currentUser || !db) return;
+  await updateDoc(doc(db, 'users', currentUser.uid, 'notes', id), updates);
+}
+async function fbLoadAnswers() {
+  if (!currentUser || !db) return [];
+  const snap = await getDocs(collection(db, 'users', currentUser.uid, 'answers'));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+}
+async function fbSaveAnswer(ans) {
+  if (!currentUser || !db) throw new Error('Not signed in');
+  return await addDoc(collection(db, 'users', currentUser.uid, 'answers'), { ...ans, createdAt: serverTimestamp() });
+}
+async function fbDeleteAnswer(id) {
+  if (!currentUser || !db) return;
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'answers', id));
+}
+async function fbUpdateAnswer(id, updates) {
+  if (!currentUser || !db) return;
+  await updateDoc(doc(db, 'users', currentUser.uid, 'answers', id), updates);
+}
+
+// ──────────────────────────────────────────────────────────────
+// AI API CALLERS — Gemini, Claude, OpenAI
+// ──────────────────────────────────────────────────────────────
+async function callGemini(prompt, imageBase64 = null) {
+  const key = state.aiKeys.gemini;
+  if (!key) throw new Error('Gemini API key not set. Add it in Settings.');
+  const parts = [{ text: prompt }];
+  if (imageBase64) parts.push({ inline_data: { mime_type: 'image/jpeg', data: imageBase64 } });
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '(no response)';
+}
+
+async function callClaude(prompt, imageBase64 = null) {
+  const key = state.aiKeys.claude;
+  if (!key) throw new Error('Claude API key not set. Add it in Settings.');
+  const content = imageBase64
+    ? [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: imageBase64 } }, { type: 'text', text: prompt }]
+    : prompt;
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content }]
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.content?.[0]?.text || '(no response)';
+}
+
+async function callOpenAI(prompt, imageBase64 = null) {
+  const key = state.aiKeys.openai;
+  if (!key) throw new Error('OpenAI API key not set. Add it in Settings.');
+  const content = imageBase64
+    ? [{ type: 'text', text: prompt }, { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } }]
+    : prompt;
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content }]
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.choices?.[0]?.message?.content || '(no response)';
+}
+
+async function callAI(prompt, imageBase64 = null) {
+  if (state.selectedAi === 'gemini') return await callGemini(prompt, imageBase64);
+  if (state.selectedAi === 'claude') return await callClaude(prompt, imageBase64);
+  if (state.selectedAi === 'openai') return await callOpenAI(prompt, imageBase64);
+  throw new Error('Unknown AI');
+}
+
+// ──────────────────────────────────────────────────────────────
+// PROMPTS
+// ──────────────────────────────────────────────────────────────
+const PROMPT_EXTRACT = `You are an expert assistant helping a TNPSC Group I aspirant.
+
+The user has shared study material. Extract and organize EVERYTHING useful for the exam:
+
+1. **Key Points** — core concepts, definitions, principles
+2. **Statistics & Numbers** — percentages, amounts, growth rates
+3. **Years & Dates** — important historical/policy years
+4. **Articles, Acts, Schemes** — constitutional articles, laws, government schemes (with numbers)
+5. **Key Figures / Personalities** — names with their contributions
+6. **Committees & Reports** — committee names, year, recommendation
+7. **Examples / Case Studies** — concrete examples to use in answers
+
+Format as clean Markdown with headers and bullet points. Be exhaustive but concise — every line should be exam-useful.
+
+Study material:
+---
+{CONTENT}
+---`;
+
+const PROMPT_ANSWER = `You are an expert TNPSC Group I Mains answer-writing coach.
+
+The user is preparing descriptive answers. Given the question below, create a model answer STRUCTURE that follows the proven UPSC/TNPSC Mains pattern:
+
+1. **Introduction** (2-3 lines): keyword-rich opener with definition/context/data point
+2. **Body** — break into logical sub-headings with:
+   - Dimensions to cover
+   - Key facts, articles, schemes, examples to include under each
+   - Suggested keywords/terms to weave in
+3. **Conclusion** (2-3 lines): forward-looking, balanced, with a quote or vision if apt
+4. **Diagrams/Flowcharts** to draw (if applicable)
+5. **Value-additions** — quotes, committee reports, recent govt initiatives
+
+Keep it skeletal — this is a STRUCTURE, not a written-out answer. The user will fill in their own words.
+
+Question:
+---
+{QUESTION}
+---`;
+
+// ──────────────────────────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────────────────────────
+const root = document.getElementById('app-root');
+
+function render() {
+  root.innerHTML = `
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">Group I</div>
+        <div class="brand-sub">TNPSC Mains · Study Platform</div>
+        ${renderAuthBar()}
+        ${renderSyllabusNav()}
+      </aside>
+      <main class="main">
+        <div class="tabs">
+          ${renderTabBtn('syllabus', 'Syllabus & Notes')}
+          ${renderTabBtn('assistant', 'AI Study Assistant')}
+          ${renderTabBtn('answers', 'Answer Structure Lab')}
+          ${renderTabBtn('settings', 'Settings')}
+        </div>
+        ${renderView()}
+      </main>
+    </div>
+  `;
+  attachEvents();
+}
+
+function renderAuthBar() {
+  if (!firebaseReady) {
+    return `<div class="auth-bar signed-out">
+      <span class="user">⚠ Firebase not configured</span>
+      <button data-act="show-setup">Set up</button>
+    </div>`;
+  }
+  if (currentUser) {
+    return `<div class="auth-bar">
+      <span class="user">✓ ${currentUser.email}</span>
+      <button data-act="signout">Sign out</button>
+    </div>`;
+  }
+  return `<div class="auth-bar signed-out">
+    <span class="user">Not signed in</span>
+    <button data-act="signin">Sign in</button>
+  </div>`;
+}
+
+function renderTabBtn(id, label) {
+  return `<button class="tab-btn ${state.view === id ? 'active' : ''}" data-tab="${id}">${label}</button>`;
+}
+
+function renderSyllabusNav() {
+  return SYLLABUS.papers.map(p => `
+    <div class="paper-group">
+      <div class="paper-title">${p.title}</div>
+      <ul class="unit-list">
+        ${p.units.map(u => `
+          <li class="unit-item ${state.activeUnitId === u.id ? 'active' : ''}" data-unit="${u.id}">
+            <span class="unit-num">${u.code}</span>
+            <span class="unit-name">${u.title}</span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function renderView() {
+  if (state.view === 'syllabus') return renderSyllabusView();
+  if (state.view === 'assistant') return renderAssistantView();
+  if (state.view === 'answers') return renderAnswersView();
+  if (state.view === 'settings') return renderSettingsView();
+  return '';
+}
+
+function renderSyllabusView() {
+  const unit = ALL_UNITS.find(u => u.id === state.activeUnitId);
+  if (!unit) return '<div class="empty">Select a unit from the sidebar.</div>';
+
+  return `
+    <div class="section-sub">${unit.paperTitle}</div>
+    <h1 class="section-title">${unit.title}</h1>
+    <div class="card">
+      <h4>Official Syllabus</h4>
+      <div class="syllabus-text">${unit.content}</div>
+    </div>
+    <div class="card">
+      <h4>My Saved Notes for this Unit</h4>
+      <div id="notes-list">
+        ${state.notes.length === 0
+          ? '<div class="empty">No notes saved yet. Use the AI Study Assistant to extract and save content for this unit.</div>'
+          : state.notes.map(renderNoteCard).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderNoteCard(n) {
+  const date = n.createdAt?.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString() : 'now';
+  return `
+    <div class="note-card" data-note-id="${n.id}">
+      <div class="note-meta">
+        <span>${date} · ${n.source || 'manual'}</span>
+        <span>${n.aiUsed || ''}</span>
+      </div>
+      <div class="note-title">${n.title || 'Untitled'}</div>
+      <div class="note-body">${escapeHtml(n.body || '')}</div>
+      <div class="note-actions">
+        <button class="btn btn-secondary btn-small" data-act="edit-note" data-id="${n.id}">Edit</button>
+        <button class="btn btn-secondary btn-small btn-danger" data-act="delete-note" data-id="${n.id}">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderAssistantView() {
+  const unit = ALL_UNITS.find(u => u.id === state.activeUnitId);
+  return `
+    <div class="section-sub">AI · Study Assistant</div>
+    <h1 class="section-title">Extract key points from any content</h1>
+    ${!currentUser ? '<div class="warning">Sign in to save extractions to your library.</div>' : ''}
+    <div class="card">
+      <h4>Active Unit (where extractions will be saved)</h4>
+      <div style="font-size:14px;color:var(--ink-soft);">${unit ? unit.paperTitle + ' → ' + unit.title : 'None selected'}</div>
+    </div>
+    <div class="card">
+      <h4>1. Provide Content</h4>
+      <div class="field">
+        <label>Paste text</label>
+        <textarea id="paste-input" placeholder="Paste study material here, or upload a file below..." rows="6">${escapeHtml(state.uploadedText)}</textarea>
+      </div>
+      <div class="upload-zone ${state.uploadedFile ? 'has-file' : ''}" id="upload-zone">
+        <div class="upload-icon">📎</div>
+        <div class="upload-text">
+          ${state.uploadedFile ? `<span class="file-name">${state.uploadedFile.name}</span>` : 'Click to upload PDF / Image / Text file'}
+        </div>
+        <input type="file" id="file-input" accept=".pdf,.txt,.png,.jpg,.jpeg,.webp" style="display:none;" />
+      </div>
+    </div>
+    <div class="card">
+      <h4>2. Choose AI & Extract</h4>
+      <div class="ai-controls">
+        <select id="ai-select" class="ai-select">
+          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>Gemini 2.0 Flash</option>
+          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 Sonnet</option>
+          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini</option>
+        </select>
+        <button class="btn btn-primary" data-act="extract">Extract Key Points</button>
+        <button class="btn btn-secondary" data-act="clear-input">Clear</button>
+      </div>
+      <div style="font-size:11px;color:var(--ink-muted);margin-top:6px;">Need API keys? Go to Settings. Gemini has a free tier.</div>
+    </div>
+    ${state.aiLoading ? '<div class="ai-loading">⌛ Working with ' + state.selectedAi + '...</div>' : ''}
+    ${state.aiOutput ? `
+      <div class="card">
+        <h4>3. AI Output (review & save)</h4>
+        <div class="ai-output">${escapeHtml(state.aiOutput)}</div>
+        <div class="btn-row">
+          <input type="text" id="note-title" placeholder="Title for this note (e.g., '1857 Revolt — causes & consequences')" style="flex:1;min-width:240px;padding:8px 10px;border:1px solid var(--line);border-radius:5px;background:#fdfbf6;" />
+          <button class="btn btn-primary" data-act="save-note">Save to ${unit?.title || 'unit'}</button>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+function renderAnswersView() {
+  return `
+    <div class="section-sub">Answer Writing · Mains Practice</div>
+    <h1 class="section-title">Answer Structure Lab</h1>
+    ${!currentUser ? '<div class="warning">Sign in to save answer structures.</div>' : ''}
+    <div class="card">
+      <h4>Upload a Descriptive Question</h4>
+      <div class="field">
+        <label>Question</label>
+        <textarea id="question-input" placeholder="Type or paste your descriptive question here..." rows="5"></textarea>
+      </div>
+      <div class="ai-controls">
+        <select id="ai-select-ans" class="ai-select">
+          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>Gemini 2.0 Flash</option>
+          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 Sonnet</option>
+          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini</option>
+        </select>
+        <button class="btn btn-primary" data-act="generate-structure">Generate Structure</button>
+      </div>
+    </div>
+    ${state.aiLoading ? '<div class="ai-loading">⌛ Generating structure...</div>' : ''}
+    ${state.aiOutput ? `
+      <div class="card">
+        <h4>Generated Structure (refine & save)</h4>
+        <textarea id="structure-edit" rows="14" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:#fdfbf6;font-family:inherit;line-height:1.6;">${escapeHtml(state.aiOutput)}</textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" data-act="save-answer">Save Answer Structure</button>
+        </div>
+      </div>
+    ` : ''}
+    <div class="card">
+      <h4>Saved Answer Structures</h4>
+      <div id="answers-list">
+        ${state.answers.length === 0
+          ? '<div class="empty">No saved structures yet. Generate one above to start your model bank.</div>'
+          : state.answers.map(renderAnswerCard).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderAnswerCard(a) {
+  const date = a.createdAt?.seconds ? new Date(a.createdAt.seconds * 1000).toLocaleDateString() : 'now';
+  return `
+    <div class="note-card" data-answer-id="${a.id}">
+      <div class="note-meta">
+        <span>${date} · ${a.aiUsed || ''}</span>
+      </div>
+      <div class="note-title">${escapeHtml(a.question || 'No question').slice(0, 120)}</div>
+      <div class="note-body">${escapeHtml(a.structure || '')}</div>
+      <div class="note-actions">
+        <button class="btn btn-secondary btn-small" data-act="edit-answer" data-id="${a.id}">Edit</button>
+        <button class="btn btn-secondary btn-small btn-danger" data-act="delete-answer" data-id="${a.id}">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderSettingsView() {
+  return `
+    <div class="section-sub">Configuration</div>
+    <h1 class="section-title">Settings</h1>
+
+    <div class="card">
+      <h4>1. Firebase Configuration (One-time setup)</h4>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">
+        Paste your Firebase config JSON below. Get it from Firebase Console → Project Settings → Your apps → Web app.
+      </p>
+      <textarea id="firebase-config-input" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' rows="6" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;background:#fdfbf6;font-family:'JetBrains Mono',monospace;font-size:11px;">${localStorage.getItem('firebaseConfig') || ''}</textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-act="save-firebase-config">Save & Reload</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>2. AI API Keys</h4>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">Stored only in your browser (localStorage). Never sent anywhere except the AI provider.</p>
+      <div class="key-row">
+        <label>Gemini</label>
+        <input type="password" data-key="gemini" placeholder="AIza..." value="${state.aiKeys.gemini || ''}" />
+        <button class="btn btn-small btn-secondary" data-act="get-gemini-key">Get key</button>
+      </div>
+      <div class="key-row">
+        <label>Claude</label>
+        <input type="password" data-key="claude" placeholder="sk-ant-..." value="${state.aiKeys.claude || ''}" />
+        <button class="btn btn-small btn-secondary" data-act="get-claude-key">Get key</button>
+      </div>
+      <div class="key-row">
+        <label>OpenAI</label>
+        <input type="password" data-key="openai" placeholder="sk-..." value="${state.aiKeys.openai || ''}" />
+        <button class="btn btn-small btn-secondary" data-act="get-openai-key">Get key</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-act="save-keys">Save Keys</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>About Perplexity</h4>
+      <p style="font-size:13px;color:var(--ink-soft);">
+        Perplexity does not offer a public API at the moment, so it can't be integrated directly. You can use it in your browser separately for current-affairs research and paste the results into the AI Study Assistant.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Data Export</h4>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">Export all your notes and answer structures as JSON backup.</p>
+      <button class="btn btn-secondary" data-act="export-data">Export All Data</button>
+    </div>
+  `;
+}
+
+// ──────────────────────────────────────────────────────────────
+// EVENTS
+// ──────────────────────────────────────────────────────────────
+function attachEvents() {
+  // Tab nav
+  document.querySelectorAll('[data-tab]').forEach(b => {
+    b.onclick = () => { state.view = b.dataset.tab; state.aiOutput = ''; render(); if (state.view === 'answers') refreshAnswers(); };
+  });
+  // Unit select
+  document.querySelectorAll('[data-unit]').forEach(b => {
+    b.onclick = async () => {
+      state.activeUnitId = b.dataset.unit;
+      state.notes = await fbLoadNotes(state.activeUnitId).catch(() => []);
+      render();
+    };
+  });
+
+  // Action buttons
+  document.querySelectorAll('[data-act]').forEach(b => {
+    b.onclick = (e) => handleAction(b.dataset.act, b, e);
+  });
+
+  // AI select change
+  const aiSel = document.getElementById('ai-select') || document.getElementById('ai-select-ans');
+  if (aiSel) aiSel.onchange = (e) => { state.selectedAi = e.target.value; localStorage.setItem('selectedAi', state.selectedAi); };
+
+  // File upload
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.getElementById('file-input');
+  if (uploadZone && fileInput) {
+    uploadZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => handleFileUpload(e.target.files[0]);
+  }
+}
+
+async function handleAction(act, btn, ev) {
+  try {
+    if (act === 'signin') {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } else if (act === 'signout') {
+      await signOut(auth);
+    } else if (act === 'show-setup') {
+      state.view = 'settings'; render();
+    } else if (act === 'save-firebase-config') {
+      const txt = document.getElementById('firebase-config-input').value.trim();
+      try { JSON.parse(txt); } catch { alert('Invalid JSON'); return; }
+      localStorage.setItem('firebaseConfig', txt);
+      alert('Saved. Reloading...');
+      location.reload();
+    } else if (act === 'save-keys') {
+      document.querySelectorAll('[data-key]').forEach(inp => {
+        state.aiKeys[inp.dataset.key] = inp.value.trim();
+      });
+      localStorage.setItem('aiKeys', JSON.stringify(state.aiKeys));
+      alert('API keys saved (in this browser only).');
+    } else if (act === 'get-gemini-key') {
+      window.open('https://aistudio.google.com/app/apikey', '_blank');
+    } else if (act === 'get-claude-key') {
+      window.open('https://console.anthropic.com/settings/keys', '_blank');
+    } else if (act === 'get-openai-key') {
+      window.open('https://platform.openai.com/api-keys', '_blank');
+    } else if (act === 'clear-input') {
+      state.uploadedFile = null; state.uploadedText = ''; state.aiOutput = '';
+      render();
+    } else if (act === 'extract') {
+      await handleExtract();
+    } else if (act === 'generate-structure') {
+      await handleGenerateStructure();
+    } else if (act === 'save-note') {
+      await handleSaveNote();
+    } else if (act === 'save-answer') {
+      await handleSaveAnswer();
+    } else if (act === 'delete-note') {
+      if (!confirm('Delete this note?')) return;
+      await fbDeleteNote(btn.dataset.id);
+      state.notes = await fbLoadNotes(state.activeUnitId);
+      render();
+    } else if (act === 'edit-note') {
+      await handleEditNote(btn.dataset.id);
+    } else if (act === 'delete-answer') {
+      if (!confirm('Delete this answer structure?')) return;
+      await fbDeleteAnswer(btn.dataset.id);
+      await refreshAnswers();
+      render();
+    } else if (act === 'edit-answer') {
+      await handleEditAnswer(btn.dataset.id);
+    } else if (act === 'export-data') {
+      await handleExport();
+    }
+  } catch (e) {
+    alert('Error: ' + e.message);
+    state.aiLoading = false;
+    render();
+  }
+}
+
+async function handleFileUpload(file) {
+  if (!file) return;
+  state.uploadedFile = file;
+  if (file.type === 'text/plain') {
+    state.uploadedText = await file.text();
+  } else if (file.type.startsWith('image/')) {
+    // Image: convert to base64 for AI
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.uploadedText = `[Image attached: ${file.name}]`;
+      state._imageBase64 = reader.result.split(',')[1];
+      render();
+    };
+    reader.readAsDataURL(file);
+    return;
+  } else if (file.type === 'application/pdf') {
+    state.uploadedText = `[PDF attached: ${file.name}]\n\n(PDF text extraction in browser is limited. For best results, copy-paste the text from your PDF directly into the textarea above, or convert page-by-page to images.)`;
+  }
+  render();
+}
+
+async function handleExtract() {
+  const pasted = document.getElementById('paste-input')?.value || '';
+  const content = pasted || state.uploadedText || '';
+  if (!content && !state._imageBase64) { alert('Provide some content first.'); return; }
+  state.aiLoading = true; state.aiOutput = ''; render();
+  const prompt = PROMPT_EXTRACT.replace('{CONTENT}', content || '(image attached — extract content from image)');
+  state.aiOutput = await callAI(prompt, state._imageBase64 || null);
+  state.aiLoading = false;
+  render();
+}
+
+async function handleGenerateStructure() {
+  const q = document.getElementById('question-input')?.value.trim();
+  if (!q) { alert('Type a question first.'); return; }
+  state.aiLoading = true; state.aiOutput = ''; render();
+  state._lastQuestion = q;
+  const prompt = PROMPT_ANSWER.replace('{QUESTION}', q);
+  state.aiOutput = await callAI(prompt);
+  state.aiLoading = false;
+  render();
+}
+
+async function handleSaveNote() {
+  if (!currentUser) { alert('Sign in first.'); return; }
+  const title = document.getElementById('note-title')?.value.trim() || 'Untitled note';
+  const body = state.aiOutput;
+  await fbSaveNote({
+    unitId: state.activeUnitId, title, body,
+    source: state.uploadedFile?.name || 'pasted-text',
+    aiUsed: state.selectedAi
+  });
+  state.aiOutput = ''; state.uploadedFile = null; state.uploadedText = ''; state._imageBase64 = null;
+  state.notes = await fbLoadNotes(state.activeUnitId);
+  state.view = 'syllabus';
+  render();
+}
+
+async function handleSaveAnswer() {
+  if (!currentUser) { alert('Sign in first.'); return; }
+  const structure = document.getElementById('structure-edit')?.value || state.aiOutput;
+  await fbSaveAnswer({
+    question: state._lastQuestion || '(no question recorded)',
+    structure, aiUsed: state.selectedAi
+  });
+  state.aiOutput = '';
+  await refreshAnswers();
+  render();
+}
+
+async function refreshAnswers() {
+  state.answers = await fbLoadAnswers().catch(() => []);
+}
+
+async function handleEditNote(id) {
+  const n = state.notes.find(x => x.id === id); if (!n) return;
+  const newTitle = prompt('Edit title:', n.title || '');
+  if (newTitle === null) return;
+  const newBody = prompt('Edit body:', n.body || '');
+  if (newBody === null) return;
+  await fbUpdateNote(id, { title: newTitle, body: newBody });
+  state.notes = await fbLoadNotes(state.activeUnitId);
+  render();
+}
+
+async function handleEditAnswer(id) {
+  const a = state.answers.find(x => x.id === id); if (!a) return;
+  const newStruct = prompt('Edit structure:', a.structure || '');
+  if (newStruct === null) return;
+  await fbUpdateAnswer(id, { structure: newStruct });
+  await refreshAnswers();
+  render();
+}
+
+async function handleExport() {
+  if (!currentUser) { alert('Sign in first.'); return; }
+  const allNotes = {};
+  for (const u of ALL_UNITS) {
+    const ns = await fbLoadNotes(u.id);
+    if (ns.length) allNotes[u.title] = ns;
+  }
+  const allAns = await fbLoadAnswers();
+  const data = { exportedAt: new Date().toISOString(), notes: allNotes, answers: allAns };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `group1-study-backup-${Date.now()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ──────────────────────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────────────────────
+window.addEventListener('auth-change', async () => {
+  if (currentUser) {
+    state.notes = await fbLoadNotes(state.activeUnitId).catch(() => []);
+    state.answers = await fbLoadAnswers().catch(() => []);
+  } else {
+    state.notes = []; state.answers = [];
+  }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
