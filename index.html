@@ -348,7 +348,7 @@ const state = {
   notes: [],             // for active unit
   answers: [],           // saved answer structures
   aiKeys: JSON.parse(localStorage.getItem('aiKeys') || '{}'),
-  selectedAi: localStorage.getItem('selectedAi') || 'gemini',
+  selectedAi: localStorage.getItem('selectedAi') || 'gemini', // always default to Gemini
   aiOutput: '',
   aiLoading: false,
   uploadedFile: null,
@@ -402,7 +402,7 @@ async function callGemini(prompt, imageBase64 = null) {
   if (!key) throw new Error('Gemini API key not set. Add it in Settings.');
   const parts = [{ text: prompt }];
   if (imageBase64) parts.push({ inline_data: { mime_type: 'image/jpeg', data: imageBase64 } });
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contents: [{ parts }] })
   });
@@ -648,9 +648,9 @@ function renderAssistantView() {
       <h4>2. Choose AI & Extract</h4>
       <div class="ai-controls">
         <select id="ai-select" class="ai-select">
-          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>Gemini 2.0 Flash</option>
-          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 Sonnet</option>
-          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini</option>
+          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>✓ Gemini 1.5 Flash (FREE)</option>
+          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 (PAID — needs credits)</option>
+          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini (PAID — needs credits)</option>
         </select>
         <button class="btn btn-primary" data-act="extract">Extract Key Points</button>
         <button class="btn btn-secondary" data-act="clear-input">Clear</button>
@@ -684,9 +684,9 @@ function renderAnswersView() {
       </div>
       <div class="ai-controls">
         <select id="ai-select-ans" class="ai-select">
-          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>Gemini 2.0 Flash</option>
-          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 Sonnet</option>
-          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini</option>
+          <option value="gemini" ${state.selectedAi==='gemini'?'selected':''}>✓ Gemini 1.5 Flash (FREE)</option>
+          <option value="claude" ${state.selectedAi==='claude'?'selected':''}>Claude 3.5 (PAID — needs credits)</option>
+          <option value="openai" ${state.selectedAi==='openai'?'selected':''}>GPT-4o mini (PAID — needs credits)</option>
         </select>
         <button class="btn btn-primary" data-act="generate-structure">Generate Structure</button>
       </div>
